@@ -1,21 +1,24 @@
 from djongo import models
+from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 
 class Bike(models.Model):
     id = models.AutoField(primary_key=True)
     
     TVS = 'TVS'
-    BAJAJ = 'BAJAJ'
-    YAMAHA = 'YAMAHA'
-    HERO = 'HERO'
-    HONDA = 'HONDA'
+    BAJAJ = 'Bajaj'
+    YAMAHA = 'Yamaha'
+    HERO = 'Hero'
+    HONDA = 'Honda'
     
     BRAND_CHOICES = [
         (TVS, 'TVS'),
-        (BAJAJ, 'BAJAJ'),
-        (YAMAHA, 'YAMAHA'),
-        (HERO, 'HERO'),
-        (HONDA, 'HONDA'),
+        (BAJAJ, 'Bajaj'),
+        (YAMAHA, 'Yamaha'),
+        (HERO, 'Hero'),
+        (HONDA, 'Honda'),
     ]
     
     brand = models.CharField(max_length=15, choices=BRAND_CHOICES, blank=False)
@@ -25,15 +28,12 @@ class Bike(models.Model):
     weight = models.DecimalField(max_digits=5,decimal_places=2,blank=False)
     mileage = models.DecimalField(max_digits=5,decimal_places=2,blank=False)
     
-    
-    PETROL = 'PETROL'
-    DIESEL = 'DIESEL'
-    ELECTRIC = 'ELECTRIC'
+    PETROL = 'Petrol'
+    ELECTRIC = 'Electric'
     
     FUEL_TYPE = [
-        (PETROL,'PETROL'),
-        (DIESEL,'DIESEL'),
-        (ELECTRIC,'ELECTRIC'),
+        (PETROL,'Petrol'),
+        (ELECTRIC,'Electric'),
     ]
     fuel_type = models.CharField(max_length=10,choices=FUEL_TYPE,blank=False)
 
@@ -48,10 +48,12 @@ class Bike(models.Model):
     
     SINGLE_CHANNEL = 'Single Channel'
     DUAL_CHANNEL = 'Dual Channel'
+    NA = 'NA'
     
     ABS_TYPE = [
         (SINGLE_CHANNEL,'Single Channel'),
-        (DUAL_CHANNEL,'Dual Channel')
+        (DUAL_CHANNEL,'Dual Channel'),
+        (NA,'NA'),
     ]
     abs = models.CharField(max_length=20,choices=ABS_TYPE,default='NA')
     
@@ -59,3 +61,15 @@ class Bike(models.Model):
     price = models.IntegerField(blank=False)
     
     image = models.FileField(upload_to='images/')
+    
+    
+
+class Review(models.Model):
+    review_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1),MaxValueValidator(5)])
+    description = models.CharField(max_length=200, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    update = models.DateTimeField(auto_now=True)
+    active = models.BooleanField(default=True)
+    bike = models.ForeignKey(Bike, on_delete=models.CASCADE, related_name='reviews')
+    

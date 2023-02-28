@@ -29,6 +29,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'bike',
+    'user',
+    'rest_framework.authtoken',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
